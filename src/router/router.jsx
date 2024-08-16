@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Main";
 import Login from "../authentication/Login";
 import Register from "../authentication/Register";
+import Upload from "../pages/Upload";
 
 const router = createBrowserRouter([
   {
