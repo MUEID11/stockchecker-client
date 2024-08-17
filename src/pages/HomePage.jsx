@@ -96,19 +96,19 @@ const HomePage = () => {
       <div className="flex flex-col md:flex-row mx-auto p-2 justify-center items-center space-y-2 md:space-y-0 md:space-x-2 w-full max-w-xs">
         <div className="w-full">
           <input
-            className="max-w-xs px-4 py-2 text-gray-800 placeholder-gray-500 bg-white border border-gray-300 rounded-full shadow-sm outline-none focus:border-green-500 focus:ring focus:ring-green-400 focus:ring-opacity-40"
+            className="max-w-xs px-4 py-2 text-gray-800 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-green-500 focus:ring focus:ring-green-400 focus:ring-opacity-40"
             type="text"
             onChange={(e) => setSearchText(e.target.value)}
             value={searchText}
             name="search"
-            placeholder="Product Name or Category"
-            aria-label="Product Name or Category"
+            placeholder="Product Name"
+            aria-label="Product Name"
           />
         </div>
         <div>
           <button
             onClick={handleSearch}
-            className="w-full md:w-auto px-4 py-2 border-green-700 border-2 text-sm font-medium tracking-wider text-white bg-green-600 rounded-full transition-colors duration-300 transform hover:bg-green-500 focus:bg-green-500 focus:outline-none shadow-md"
+            className="w-full md:w-auto px-4 py-2 border-green-700 border-2 text-sm font-medium tracking-wider text-white bg-green-600 rounded-md transition-colors duration-300 transform hover:bg-green-500 focus:bg-green-500 focus:outline-none shadow-md"
           >
             Search
           </button>
@@ -117,7 +117,7 @@ const HomePage = () => {
           <select
             onChange={(e) => setSortOption(e.target.value)}
             value={sortOption}
-            className="w-[120px] px-2 py-2 text-sm font-medium tracking-wider text-gray-700 bg-white border border-gray-300 rounded-full shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-400 focus:ring-opacity-40"
+            className="w-[120px] px-2 py-2 text-sm font-medium tracking-wider text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-400 focus:ring-opacity-40"
           >
             <option value="">Sort By</option>
             <option value="priceLowToHigh">Price: Low to High</option>

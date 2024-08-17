@@ -1,14 +1,13 @@
-
 import toast from "react-hot-toast";
 import useAuth from "../Hooks/useAuth";
-import { useLocation, useNavigate } from "react-router-dom";
-
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-  const { signIn, googleSignIn,user } = useAuth();
+  const { signIn, googleSignIn, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const email = form.get("email");
@@ -16,7 +15,13 @@ const Login = () => {
     console.log(email, password);
     try {
       signIn(email, password)
-        .then((result) => {
+        .then(async (result) => {
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/login`,
+            { email: result?.user?.email }
+          );
+          console.log(data);
+          localStorage.setItem("token", data?.token);
           console.log(result);
           navigate(location?.state ? location.state : "/");
           toast.success("login successfull");
@@ -32,10 +37,19 @@ const Login = () => {
   const handleGooglSignin = () => {
     try {
       googleSignIn()
-        .then((result) => {
+        .then(async (result) => {
           console.log(result);
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/signup`,
+            {
+              name: result?.user?.displayName,
+              email: result?.user?.email,
+              photoURL: result?.user?.photoURL,
+            }
+          );
+          localStorage.setItem("token", data.token);
+          toast.success("Registration successfull");
           navigate(location?.state ? location.state : "/");
-          toast.success("login successfull");
         })
         .catch((error) => {
           toast.error(error.message);
@@ -101,6 +115,7 @@ const Login = () => {
           </svg>
           <p>Login with Google</p>
         </button>
+        <Link to="/register">dont have an account?Register</Link>
       </div>
     </div>
   );

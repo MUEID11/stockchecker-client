@@ -1,10 +1,11 @@
-
 import toast from "react-hot-toast";
 import useAuth from "../Hooks/useAuth";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import auth from "../firebase/firebase.config";
 
 const Register = () => {
-  const { createUser, googleSignIn,updateUserProfile } = useAuth();
+  const { createUser, googleSignIn, updateUserProfile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const handleRegister = (e) => {
@@ -17,8 +18,18 @@ const Register = () => {
     console.log(email, password, name, photo);
     try {
       createUser(email, password, name, photo)
-        .then(() => {
-          updateUserProfile(name, photo).then(() => {
+        .then(async () => {
+          updateUserProfile(name, photo).then(async () => {
+            console.log(auth.currentUser);
+            const { data } = await axios.post(
+              `${import.meta.env.VITE_API_URL}/signup`,
+              {
+                name: auth?.currentUser?.displayName,
+                email: auth?.currentUser?.email,
+                photoURL: auth?.currentUser?.photoURL,
+              }
+            );
+            localStorage.setItem("token", data.token);
             toast.success("Registration successfull");
             navigate(location?.state ? location.state : "/");
           });
@@ -34,10 +45,19 @@ const Register = () => {
   const handleGooglSignin = () => {
     try {
       googleSignIn()
-        .then((result) => {
+        .then(async (result) => {
           console.log(result);
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/signup`,
+            {
+              name: result?.user?.displayName,
+              email: result?.user?.email,
+              photoURL: result?.user?.photoURL,
+            }
+          );
+          localStorage.setItem("token", data.token);
+          toast.success("Registration successfull");
           navigate(location?.state ? location.state : "/");
-          toast.success("login successfull");
         })
         .catch((error) => {
           toast.error(error.message);
@@ -111,10 +131,11 @@ const Register = () => {
             />
           </div>
           <div className="form-control mt-6">
-            <button className="btn btn-primary">Login</button>
+            <button className="btn btn-primary">Register</button>
           </div>
         </form>
-        <button onClick={handleGooglSignin}
+        <button
+          onClick={handleGooglSignin}
           aria-label="Login with Google"
           type="button"
           className="flex items-center justify-center w-full p-4 space-x-4 border rounded-md focus:ring-2 focus:ring-offset-1 dark:border-gray-600 focus:dark:ring-violet-600"
@@ -128,6 +149,7 @@ const Register = () => {
           </svg>
           <p>Login with Google</p>
         </button>
+        <Link to="/login">dont have an account?login</Link>
       </div>
     </div>
   );
