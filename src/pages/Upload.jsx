@@ -3,43 +3,65 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 function Upload() {
-  const [product, setProduct] = useState({
+  const initialProductState = {
     name: "",
     image: "",
     description: "",
     price: "",
     category: "",
+    brandName: "",
     ratings: "",
     creationDate: new Date().toISOString().slice(0, 16), // ISO string without seconds
-  });
+  };
 
-  const categories = ["Laptop", "Smartphone", "Tablet", "Smartwatch", "Accessories", "Air Conditionar"];
+  const [product, setProduct] = useState(initialProductState);
 
-  const handleChange = async(e) => {
-    e.preventDefault();
+  const categories = [
+    "Laptop",
+    "Smartphone",
+    "Tablet",
+    "Smartwatch",
+    "Accessories",
+    "Home appliance",
+  ];
+  const brands = [
+    "Walton",
+    "Samsung",
+    "Xiaomi",
+    "Singer",
+    "Apple",
+    "Asus",
+    "Intel",
+    "AMD",
+  ];
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setProduct({
       ...product,
       [name]: value,
     });
-   
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission, e.g., send data to an API
     try {
-        const {data} = await axios.post('http://localhost:5000/upload', product);
-        console.table(data);
-        toast.success('Product uploaded successfully');
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/upload`,
+        product
+      );
+      console.table(data);
+      toast.success("Product uploaded successfully");
+
+      // Reset the form
+      setProduct(initialProductState);
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
-    
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10">
+    <div className="max-w-xl mx-auto mt-10 p-4">
       <h2 className="text-2xl font-bold mb-5">Upload Tech Product</h2>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
@@ -91,6 +113,24 @@ function Upload() {
         </div>
 
         <div>
+          <label className="block text-sm font-medium">Brand name</label>
+          <select
+            name="brandName"
+            value={product.brandName}
+            onChange={handleChange}
+            className="w-full mt-1 p-2 border border-gray-300 rounded"
+            required
+          >
+            <option value="">Select a brand</option>
+            {brands.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
           <label className="block text-sm font-medium">Category</label>
           <select
             name="category"
@@ -123,9 +163,11 @@ function Upload() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Product Creation Date and Time</label>
+          <label className="block text-sm font-medium">
+            Product Creation Date and Time
+          </label>
           <input
-            type="datetime-local"
+            type="date"
             name="creationDate"
             value={product.creationDate}
             onChange={handleChange}
