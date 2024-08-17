@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import DisplayCard from "../component/DisplayCard";
 import axios from "axios";
@@ -9,7 +9,17 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortOption, setSortOption] = useState("");
+  const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brandName, setBrandName] = useState("");
+  const [filter, setFilter] = useState({
+    category: "",
+  });
+  
+  const queryClient = useQueryClient();
+
   const getData = async (page = 1) => {
+    console.log(filter?.category);
     try {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/all`, {
         params: {
@@ -17,6 +27,7 @@ const HomePage = () => {
           sort: sortOption || "",
           page,
           limit: 10,
+          category: filter?.category,
         },
       });
       setTotalPages(data.totalPages);
@@ -32,20 +43,27 @@ const HomePage = () => {
     refetch,
   } = useQuery({
     queryFn: async () => await getData(currentPage),
-    queryKey: ["all", currentPage, sortOption],
+    queryKey: ["all", currentPage, sortOption,filter],
   });
 
   useEffect(() => {
     refetch();
-  }, [currentPage, refetch]);
+  }, [currentPage, sortOption, refetch]);
 
-  if (isLoading) {
-    return (
-      <div className="relative h-[65vh] flex items-center justify-center">
-        <span className="loading loading-spinner text-primary loading-md absolute top-50 translate-y-5"></span>
-      </div>
-    );
-  }
+  useEffect(() => {
+    fetch("/data.json")
+      .then((res) => res.json())
+      .then((data) => setData(data));
+  }, []);
+
+  useEffect(() => {
+    const selectedBrand = data.find((item) => item.brand_name === brandName);
+    if (selectedBrand) {
+      setCategories(selectedBrand.categories);
+    } else {
+      setCategories([]);
+    }
+  }, [brandName, data]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -64,6 +82,15 @@ const HomePage = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="relative h-[65vh] flex items-center justify-center">
+        <span className="loading loading-spinner text-primary loading-md absolute top-50 translate-y-5"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto my-12 p-4">
       <div className="flex flex-col md:flex-row mx-auto p-2 justify-center items-center space-y-2 md:space-y-0 md:space-x-2 w-full max-w-xs">
@@ -96,6 +123,34 @@ const HomePage = () => {
             <option value="priceLowToHigh">Price: Low to High</option>
             <option value="priceHighToLow">Price: High to Low</option>
             <option value="dateNewestFirst">Newest First</option>
+          </select>
+        </div>
+        <div>
+          <select
+            onChange={(e) => setBrandName(e.target.value)}
+            value={brandName}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Brand</option>
+            {data.map((item) => (
+              <option key={item.brand_name} value={item.brand_name}>
+                {item.brand_name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <select
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
+            value={filter.category}
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
       </div>

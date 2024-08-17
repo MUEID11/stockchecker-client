@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-  const { signIn, googleSignIn } = useAuth();
+  const { signIn, googleSignIn,user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const handleSignIn = (e) => {
