@@ -46,6 +46,7 @@ const AuthProvider = ({ children }) => {
         // Handle errors as needed
       })
       .finally(() => {
+        localStorage.removeItem('token');
         setLoading(false);
       });
   };
