@@ -4,6 +4,7 @@ import Login from "../authentication/Login";
 import Register from "../authentication/Register";
 import HomePage from "../pages/HomePage";
 import Upload from "../pages/Upload";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: "upload",
-        element: <Upload />,
+        element: <PrivateRoute><Upload /></PrivateRoute>,
       },
     ],
   },
