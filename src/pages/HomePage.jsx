@@ -15,7 +15,8 @@ const HomePage = () => {
   const [filter, setFilter] = useState({
     category: "",
   });
-  
+  const [selectedPrice, setSelectedPrice] = useState(0);
+
   const queryClient = useQueryClient();
 
   const getData = async (page = 1) => {
@@ -43,12 +44,18 @@ const HomePage = () => {
     refetch,
   } = useQuery({
     queryFn: async () => await getData(currentPage),
-    queryKey: ["all", currentPage, sortOption,filter],
+    queryKey: ["all", currentPage, sortOption, filter],
   });
 
+  const prices = products.map((product) => product.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+
   useEffect(() => {
-    refetch();
-  }, [currentPage, sortOption, refetch]);
+    if (minPrice && maxPrice) {
+      setSelectedPrice(maxPrice);
+    }
+  }, [minPrice, maxPrice]);
 
   useEffect(() => {
     fetch("/data.json")
@@ -83,6 +90,10 @@ const HomePage = () => {
     }
   };
 
+  const handlePriceChange = (e) => {
+    setSelectedPrice(Number(e.target.value));
+  };
+
   if (isLoading) {
     return (
       <div className="relative h-[65vh] flex items-center justify-center">
@@ -90,6 +101,10 @@ const HomePage = () => {
       </div>
     );
   }
+
+  const filteredProducts = products.filter(
+    (product) => product.price <= selectedPrice
+  );
 
   return (
     <div className="container mx-auto my-12 p-4">
@@ -153,10 +168,25 @@ const HomePage = () => {
             ))}
           </select>
         </div>
+        <div>
+          <label htmlFor="price-range">Max Price: {selectedPrice}</label>
+          <input
+            id="price-range"
+            type="range"
+            min={minPrice}
+            max={maxPrice}
+            value={selectedPrice}
+            onChange={handlePriceChange}
+            className="w-full"
+          />
+          <div>
+            <p>Selected Max Price: {selectedPrice}</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <DisplayCard key={product._id} product={product}></DisplayCard>
         ))}
       </div>
