@@ -1,8 +1,11 @@
-import axios from "axios";
+
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
+import axios from "axios";
 
 function Upload() {
+  const axiosSecure = useAxiosSecure();
   const initialProductState = {
     name: "",
     image: "",
@@ -46,8 +49,7 @@ function Upload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/upload`,
+      const { data } = await axiosSecure.post('/upload',
         product
       );
       console.table(data);
