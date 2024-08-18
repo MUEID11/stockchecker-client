@@ -17,6 +17,7 @@ This is the frontend application for StockChecker, a platform to manage and trac
 
 3. **Environment Variables**
     VITE_API_URL:http://localhost:5000
+    Firebase_env: Your firebase envs
 
 4. **Building for Production**
     npm run build
