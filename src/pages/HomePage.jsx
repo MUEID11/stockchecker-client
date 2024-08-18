@@ -107,11 +107,11 @@ const HomePage = () => {
   );
 
   return (
-    <div className="container mx-auto my-12 p-4">
-      <div className="flex flex-col md:flex-row mx-auto p-2 justify-center items-center space-y-2 md:space-y-0 md:space-x-2 w-full max-w-xs">
-        <div className="w-full">
+    <div className="container mx-auto my-10 p-4">
+      <div className="flex flex-col md:flex-row mx-auto p-2 justify-center items-center space-y-2 md:space-y-0 md:space-x-12 w-full">
+        <div className="sm:flex items-center justify-center sm:space-x-2">
           <input
-            className="max-w-xs px-4 py-2 text-gray-800 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-green-500 focus:ring focus:ring-green-400 focus:ring-opacity-40"
+            className="max-w-xs px-3 py-2 text-gray-800 placeholder-gray-500 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-green-500 focus:ring focus:ring-green-400 focus:ring-opacity-40"
             type="text"
             onChange={(e) => setSearchText(e.target.value)}
             value={searchText}
@@ -119,20 +119,21 @@ const HomePage = () => {
             placeholder="Product Name"
             aria-label="Product Name"
           />
+          <div>
+            <button
+              onClick={handleSearch}
+              className="w-full mt-2 sm:mt-0 md:w-auto px-4 py-2 border-green-700 border-2 text-sm font-medium tracking-wider text-white bg-green-600 rounded-md transition-colors duration-300 transform hover:bg-green-500 focus:bg-green-500 focus:outline-none shadow-md"
+            >
+              Search
+            </button>
+          </div>
         </div>
-        <div>
-          <button
-            onClick={handleSearch}
-            className="w-full md:w-auto px-4 py-2 border-green-700 border-2 text-sm font-medium tracking-wider text-white bg-green-600 rounded-md transition-colors duration-300 transform hover:bg-green-500 focus:bg-green-500 focus:outline-none shadow-md"
-          >
-            Search
-          </button>
-        </div>
-        <div className="w-[120px]">
+
+        <div className="w-auto">
           <select
             onChange={(e) => setSortOption(e.target.value)}
             value={sortOption}
-            className="w-[120px] px-2 py-2 text-sm font-medium tracking-wider text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-400 focus:ring-opacity-40"
+            className="min-w-xs px-2 py-2 tracking-wider text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-400 focus:ring-opacity-40"
           >
             <option value="">Sort By</option>
             <option value="priceLowToHigh">Price: Low to High</option>
@@ -144,7 +145,7 @@ const HomePage = () => {
           <select
             onChange={(e) => setBrandName(e.target.value)}
             value={brandName}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="min-w-xs p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Brand</option>
             {data.map((item) => (
@@ -156,7 +157,7 @@ const HomePage = () => {
         </div>
         <div>
           <select
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="min-w-xs p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={(e) => setFilter({ ...filter, category: e.target.value })}
             value={filter.category}
           >
@@ -168,8 +169,13 @@ const HomePage = () => {
             ))}
           </select>
         </div>
-        <div>
-          <label htmlFor="price-range">Max Price: {selectedPrice}</label>
+        <div className="min-w-xs">
+          <label
+            htmlFor="price-range"
+            className="block mb-2 text-sm font-medium text-gray-700"
+          >
+            Max Price: {selectedPrice}
+          </label>
           <input
             id="price-range"
             type="range"
@@ -177,10 +183,12 @@ const HomePage = () => {
             max={maxPrice}
             value={selectedPrice}
             onChange={handlePriceChange}
-            className="w-full"
+            style={{ width: "100%" }} // Inline style to ensure full width
           />
           <div>
-            <p>Selected Max Price: {selectedPrice}</p>
+            <p className="mt-2 text-sm text-gray-500">
+              Selected Max Price: {selectedPrice}
+            </p>
           </div>
         </div>
       </div>
