@@ -14,7 +14,7 @@ function Upload() {
     category: "",
     brandName: "",
     ratings: "",
-    creationDate: new Date().toISOString().slice(0, 16), // ISO string without seconds
+    creationDate: Date.now(), // ISO string without seconds
   };
 
   const [product, setProduct] = useState(initialProductState);
@@ -164,7 +164,7 @@ function Upload() {
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium">
             Product Creation Date and Time
           </label>
@@ -176,7 +176,7 @@ function Upload() {
             className="w-full mt-1 p-2 border border-gray-300 rounded"
             required
           />
-        </div>
+        </div> */}
 
         <div>
           <button

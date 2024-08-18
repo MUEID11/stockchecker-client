@@ -28,10 +28,11 @@ const HomePage = () => {
           sort: sortOption || "",
           page,
           limit: 10,
-          category: filter?.category,
+          category: filter.category,
+          brand: brandName,
         },
       });
-      setTotalPages(data.totalPages);
+      setTotalPages(data?.totalPages);
       return data.data;
     } catch (error) {
       console.log(error.message);
@@ -44,7 +45,7 @@ const HomePage = () => {
     refetch,
   } = useQuery({
     queryFn: async () => await getData(currentPage),
-    queryKey: ["all", currentPage, sortOption, filter],
+    queryKey: ["all", currentPage, sortOption, filter,brandName],
   });
 
   const prices = products.map((product) => product.price);
